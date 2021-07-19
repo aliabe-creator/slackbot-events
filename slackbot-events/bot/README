@@ -1,0 +1,3 @@
+Hey! I created this bot as a complement to slackbot-socials. This bot allows you to create simple Google Calendar events within Slack using the Google Calendar API. It also will fetch event attributes from an existing event's link and post details of it in a Slack channel.
+
+The program requires the .env file with the Slack credentials, as well as 'calsecret.json,' which contains the Google Calendar API key. It also requires exposing port 5000 to the internet, I use Cloudflare Tunnel to redirect requests to localhost. You are free to use all or some of my code.
