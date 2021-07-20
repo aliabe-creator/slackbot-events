@@ -157,7 +157,7 @@ def add():
         return Response(), 200
     
     else:
-        client.chat_postEphemeral(user = user_id, channel = channel_id, text='You are not authorized to use this command. If this seems like a mistake, DM Abe Li.')
+        client.chat_postEphemeral(user = user_id, channel = channel_id, text='You are not authorized to use this command. If this seems like a mistake, DM an admin.')
         
 @app.route('/slack/block', methods=['POST'])
 def block(): #for any block action
