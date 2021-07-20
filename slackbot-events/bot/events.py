@@ -104,7 +104,7 @@ def peven():
         return Response(), 200
     
     else: #if user is not an admin
-        client.chat_postEphemeral(user = p_user_id, channel = p_channel_id, text='You are not authorized to use this command. If this seems like a mistake, DM Abe Li.')
+        client.chat_postEphemeral(user = p_user_id, channel = p_channel_id, text='You are not authorized to use this command. If this seems like a mistake, DM an admin.')
         
 @app.route('/slack/addevent', methods=['POST'])
 def add():
