@@ -3,9 +3,6 @@ Created on Jul 13, 2021
 
 @author: Private
 
-Changelog:
-As of July 16, bot is able to create a simple event with event name, time, location, and prettyformat it.
-As of July 18, bot is able to prettyformat a event just with url, recurrence and description are supported in addition to basic attributes.
 '''
 
 import slack
@@ -14,12 +11,13 @@ from slackeventsapi import SlackEventAdapter
 import json
 from googleapiclient.discovery import build
 import google_auth_oauthlib.flow
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 import base64
 import pprint
 import re
 from dotenv import load_dotenv
 import os
+from multiprocessing import Process
 
 load_dotenv()
 
@@ -432,6 +430,39 @@ def reset(): #resets all globals
     selected_time = ''
     full_location = ''
     gcal_link = ''
-    
+
+def remindAdmin():
+    while(True):
+        with open('time.json', 'r') as f:
+            data = json.load(f)
+            datetime_time = datetime.fromtimestamp(data['latest_scheduled'])
+            seconds_since = (datetime.now() - datetime_time).total_seconds() #get seconds between now and latest scheduled message post time
+            f.close()
+        
+            if (seconds_since > 60): # meaning the message has already been posted, need to sched a new message
+                client.chat_postMessage(channel = 'D0280FPSM5M', text = 'Scheduling next admin meeting in 2 weeks.')
+                
+                next_date = date.today() + timedelta(days=14) #get time 14 days in advance, at 5:50 PM
+                scheduled_time = time(hour=17, minute=50)
+                schedule_timestamp = datetime.combine(next_date, scheduled_time).timestamp()
+                
+                channel_id = "G01CSM59W74" #post message
+                client.chat_scheduleMessage(
+                    channel=channel_id,
+                    text="Admin meeting in 10 minutes!",
+                    post_at=schedule_timestamp
+                )
+                
+                with open('time.json', 'w') as f:
+                    data = json.load(f)
+                    data['latest_scheduled'] = schedule_timestamp #update with new latest timestamp
+                    json.dump(data, f) #dump to time.json
+                    f.close()
+        
+        time.sleep(600) #run every 10 mins
+  
 if __name__ == "__main__":
-    app.run(debug=True)
+    p = Process(target=remindAdmin, args=()) #uses multiprocessing so that it can run concurrently!
+    p.start()
+    app.run(debug=True, use_reloader = False)
+    p.join()
