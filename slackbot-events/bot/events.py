@@ -18,6 +18,7 @@ import re
 from dotenv import load_dotenv
 import os
 from multiprocessing import Process
+import time as tm
 
 load_dotenv()
 
@@ -459,7 +460,7 @@ def remindAdmin():
                     json.dump(data, f) #dump to time.json
                     f.close()
         
-        time.sleep(600) #run every 10 mins
+        tm.sleep(600) #run every 10 mins
   
 if __name__ == "__main__":
     p = Process(target=remindAdmin, args=()) #uses multiprocessing so that it can run concurrently!
